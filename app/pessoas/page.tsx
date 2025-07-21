@@ -41,6 +41,7 @@ export default function PessoasPage() {
 
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/`, {
+      method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
       },
