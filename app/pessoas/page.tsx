@@ -33,51 +33,46 @@ export default function PessoasPage() {
   );
 
   const fetchPessoas = async () => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    router.push("/login");
-    return;
-  }
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+      return;
+    }
 
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    if (!res.ok) throw new Error("Erro ao buscar pessoas");
+      if (!res.ok) throw new Error("Erro ao buscar pessoas");
 
-    const data = await res.json();
+      const data = await res.json();
 
-    const pessoasConvertidas: Pessoa[] = data.map((u: any) => {
-      // Tratamento do caminho da imagem
-      let fotoFinal = "/default-avatar.png";
+      const pessoasConvertidas: Pessoa[] = data.map((u: any) => {
+        let fotoFinal = "/default-avatar.png";
 
-      if (u.image_path) {
-        const imgPath = u.image_path.startsWith("/")
-          ? u.image_path.slice(1) // remove a barra inicial
-          : u.image_path;
+        if (u.image_path) {
+          const cleanedPath = u.image_path.replace(/^\/+/, "");
+          fotoFinal = `${process.env.NEXT_PUBLIC_API_URL}/${cleanedPath}`;
+        }
 
-        fotoFinal = `${process.env.NEXT_PUBLIC_API_URL}/${imgPath}`;
-      }
+        return {
+          id: u.id,
+          nome: u.name,
+          foto: fotoFinal,
+        };
+      });
 
-      return {
-        id: u.id,
-        nome: u.name,
-        foto: fotoFinal,
-      };
-    });
-
-    setPessoas(pessoasConvertidas);
-  } catch (err: any) {
-    setError(err.message);
-  } finally {
-    setLoading(false);
-  }
-};
-
+      setPessoas(pessoasConvertidas);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleCadastrar = async (nome: string, fotoFile: File | null) => {
     const token = localStorage.getItem("token");
@@ -90,8 +85,6 @@ export default function PessoasPage() {
     formData.append("name", nome);
     formData.append("image_file", fotoFile);
     formData.append("cellphone", "999999999");
-    formData.append("email", `${Date.now()}@teste.com`);
-    formData.append("position", "Analista");
 
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/`, {
@@ -114,17 +107,21 @@ export default function PessoasPage() {
     }
   };
 
-  const handleEditar = async (id: number, nome: string, foto: string) => {
+  const handleEditar = async (id: number, nome: string) => {
     const token = localStorage.getItem("token");
     try {
+      const formData = new URLSearchParams();
+      formData.append("name", nome);
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
-        method: "PUT",
+        method: "PATCH",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: JSON.stringify({ name: nome, image_url: foto }),
+        body: formData,
       });
+
       if (!res.ok) throw new Error("Erro ao atualizar pessoa");
       fetchPessoas();
     } catch (err: any) {
@@ -141,6 +138,7 @@ export default function PessoasPage() {
           Authorization: `Bearer ${token}`,
         },
       });
+
       if (!res.ok) throw new Error("Erro ao excluir pessoa");
       fetchPessoas();
     } catch (err: any) {
@@ -172,6 +170,7 @@ export default function PessoasPage() {
             Cadastrar
           </button>
         </div>
+
         {loading && <p>Carregando...</p>}
         {error && <p className="text-red-600">{error}</p>}
         {!loading && !error && (
@@ -235,10 +234,7 @@ export default function PessoasPage() {
             onChange={(e) => setFotoFile(e.target.files?.[0] || null)}
             required
           />
-          <button
-            type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded"
-          >
+          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
             Salvar
           </button>
         </form>
@@ -253,8 +249,7 @@ export default function PessoasPage() {
               e.preventDefault();
               const form = e.currentTarget;
               const nome = (form.elements.namedItem("nome") as HTMLInputElement).value;
-              const foto = (form.elements.namedItem("foto") as HTMLInputElement).value;
-              handleEditar(modalEditarOpen.id, nome, foto);
+              handleEditar(modalEditarOpen.id, nome);
               setModalEditarOpen(null);
             }}
             className="space-y-3"
@@ -266,16 +261,7 @@ export default function PessoasPage() {
               className="border w-full px-2 py-1 rounded"
               required
             />
-            <input
-              name="foto"
-              defaultValue={modalEditarOpen.foto}
-              placeholder="URL da Foto"
-              className="border w-full px-2 py-1 rounded"
-            />
-            <button
-              type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded"
-            >
+            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
               Salvar
             </button>
           </form>
