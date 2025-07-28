@@ -16,7 +16,7 @@ interface Props {
 export default function Table({ pessoas, onEditar, onExcluir }: Props) {
   return (
     <div className="w-full border border-gray-300 rounded-md overflow-hidden">
-      <table className="min-w-full text-sm">
+      <table className="min-w-full text-sm text-color-text">
         <thead className="bg-gray-100">
           <tr>
             <th className="text-left p-2">Foto</th>

@@ -19,8 +19,43 @@ export default function DashboardPage() {
   const [error, setError] = useState("");
   const [file, setFile] = useState<File | null>(null);
 
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+  const fetchLogs = async () => {
+    if (!token) return;
+
+    setLoading(true);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users_log`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) throw new Error("Erro ao buscar logs");
+
+      const data = await res.json();
+
+      const parsedLogs: LogItem[] = data.map((log: any) => ({
+        id: log.id,
+        nome: log.user?.name || "Desconhecido",
+        avatar: log.user?.image_url || "/default-avatar.png",
+        mensagem: `Reconhecimento em ${new Date(log.log_time).toLocaleString("pt-BR")}`,
+      }));
+
+      setLogs(parsedLogs);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchLogs();
+  }, []);
+
   const reconhecerRosto = async () => {
-    const token = localStorage.getItem("token");
     if (!token || !file) return;
 
     setLoading(true);
@@ -58,7 +93,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <main className="flex min-h-screen w-screen">
+    <main className="flex min-h-screen w-screen bg-white">
       <NavBar />
 
       <div className="flex flex-col items-center justify-start flex-1 p-8 gap-4">

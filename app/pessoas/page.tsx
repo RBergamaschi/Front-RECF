@@ -97,7 +97,7 @@ export default function PessoasPage() {
 
       if (!res.ok) {
         const error = await res.text();
-        console.error("Erro no cadastro:", error);
+        console.error("Erro no cadastro:", error); // ✅ já está aqui, bom!
         throw new Error("Erro ao cadastrar pessoa");
       }
 
@@ -151,7 +151,7 @@ export default function PessoasPage() {
   }, []);
 
   return (
-    <main className="flex min-h-screen w-screen">
+    <main className="flex min-h-screen w-screen bg-white">
       <NavBar />
       <div className="flex flex-col flex-1 p-8">
         <div className="flex justify-between mb-4">
@@ -160,7 +160,7 @@ export default function PessoasPage() {
             placeholder="Buscar Pessoa"
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
-            className="w-1/5 border rounded px-1 py-2 text-sm bg-gray-100"
+            className="w-1/5 border rounded px-1 py-2 text-sm bg-gray-100 text-color-text"
           />
           <button
             onClick={() => setModalCadastroOpen(true)}
@@ -208,7 +208,7 @@ export default function PessoasPage() {
 
       {/* Modal Cadastrar */}
       <Modal open={modalCadastroOpen} onClose={() => setModalCadastroOpen(false)}>
-        <h2 className="text-lg font-semibold mb-2">Cadastrar Pessoa</h2>
+        <h2 className="text-lg font-semibold mb-2 text-color-text">Cadastrar Pessoa</h2>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -223,14 +223,14 @@ export default function PessoasPage() {
           <input
             name="nome"
             placeholder="Nome"
-            className="border w-full px-2 py-1 rounded"
+            className="border w-full px-2 py-1 text-sb rounded text-color-text"
             required
           />
           <input
             name="foto"
             type="file"
             accept="image/*"
-            className="border w-full px-2 py-1 rounded"
+            className="border w-full px-2 py-1 rounded text-color-text"
             onChange={(e) => setFotoFile(e.target.files?.[0] || null)}
             required
           />
@@ -242,7 +242,7 @@ export default function PessoasPage() {
 
       {/* Modal Editar */}
       <Modal open={!!modalEditarOpen} onClose={() => setModalEditarOpen(null)}>
-        <h2 className="text-lg font-semibold mb-2">Editar Pessoa</h2>
+        <h2 className="text-lg font-semibold mb-2 text-color-text">Editar Pessoa</h2>
         {modalEditarOpen && (
           <form
             onSubmit={(e) => {
@@ -258,10 +258,10 @@ export default function PessoasPage() {
               name="nome"
               defaultValue={modalEditarOpen.nome}
               placeholder="Nome"
-              className="border w-full px-2 py-1 rounded"
+              className="border w-full px-2 py-1 rounded text-color-text"
               required
             />
-            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
+            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded text-color-text">
               Salvar
             </button>
           </form>
@@ -271,7 +271,7 @@ export default function PessoasPage() {
       {/* Modal Excluir */}
       <Modal open={!!modalExcluirOpen} onClose={() => setModalExcluirOpen(null)}>
         {modalExcluirOpen && (
-          <div className="space-y-4">
+          <div className="space-y-4 text-color-text">
             <p>
               Tem certeza que deseja excluir{" "}
               <strong>{modalExcluirOpen.nome}</strong>?
