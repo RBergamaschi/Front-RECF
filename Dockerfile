@@ -1,18 +1,11 @@
-# --- Dockerfile Multi-Estágio para Frontend Next.js ---
-
-# --- Estágio 1: Construção (Build) ---
-# Usamos uma imagem Node.js para instalar as dependências e construir o projeto.
 FROM node:18-alpine AS builder
 WORKDIR /app
 
-# Copia os ficheiros de configuração e instala as dependências
 COPY package*.json ./
 RUN npm install
 
-# Copia o resto do código-fonte
 COPY . .
 
-# Constrói a aplicação para produção
 RUN npm run build
 
 # --- Estágio 2: Produção ---
@@ -20,8 +13,7 @@ RUN npm run build
 FROM node:18-alpine
 WORKDIR /app
 
-# Copia os ficheiros de configuração da aplicação
-COPY --from=builder /app/next.config.js ./
+COPY --from=builder /app/next.config.ts ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
 
