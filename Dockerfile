@@ -1,3 +1,4 @@
+# --- Estágio 1: Construção (Build) ---
 FROM node:18-alpine AS builder
 WORKDIR /app
 
@@ -9,15 +10,15 @@ COPY . .
 RUN npm run build
 
 # --- Estágio 2: Produção ---
-# Usamos uma imagem mais pequena para servir a aplicação já construída.
 FROM node:18-alpine
 WORKDIR /app
 
 COPY --from=builder /app/next.config.ts ./
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/package*.json ./
 
-# Copia a pasta '.next' que contém a aplicação construída
+RUN npm install --omit=dev
+
 COPY --from=builder /app/.next ./.next
 
 # Expõe a porta 3000
