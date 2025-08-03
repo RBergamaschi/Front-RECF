@@ -40,7 +40,7 @@ export default function PessoasPage() {
     }
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -87,7 +87,7 @@ export default function PessoasPage() {
     formData.append("cellphone", "999999999");
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -113,7 +113,7 @@ export default function PessoasPage() {
       const formData = new URLSearchParams();
       formData.append("name", nome);
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${id}`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -132,7 +132,7 @@ export default function PessoasPage() {
   const handleExcluir = async (id: number) => {
     const token = localStorage.getItem("token");
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
