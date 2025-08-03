@@ -7,6 +7,8 @@ RUN npm install
 
 COPY . .
 
+RUN echo "VERIFICANDO VARIAVEL: O valor de NEXT_PUBLIC_API_URL é $NEXT_PUBLIC_API_URL"
+
 RUN npm run build
 
 # --- Estágio 2: Produção ---
