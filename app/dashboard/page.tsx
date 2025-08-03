@@ -26,6 +26,7 @@ export default function DashboardPage() {
 
     setLoading(true);
     try {
+      console.log("A URL da API que o frontend está a usar é:", process.env.NEXT_PUBLIC_API_URL);
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users_log`, {
         headers: {
           Authorization: `Bearer ${token}`,
