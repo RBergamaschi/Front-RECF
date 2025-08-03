@@ -65,7 +65,7 @@ export default function DashboardPage() {
     formData.append("image_file", file);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recognition/`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/recognition/`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
