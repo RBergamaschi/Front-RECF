@@ -17,7 +17,8 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const res = await fetch("process.env.NEXT_PUBLIC_API_URL", {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const response = await fetch(`${apiUrl}/admin/token`, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
